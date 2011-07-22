@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.XPath;
 
 namespace CodeSequences
 {
-	internal class _4_to_uniform_function_signatures
+	internal class _5_code_becomes_data
 	{
 		private readonly XmlDocument _character = new XmlDocument();
 		private readonly WotcResponseCleaner _cleaner = new WotcResponseCleaner();
@@ -15,15 +17,32 @@ namespace CodeSequences
 
 		public IEnumerable<CardViewModel> ParseCharacterIntoCards()
 		{
-			foreach (XPathNavigator powerElement in _character.CreateNavigator().Select("details/detail[@type='power']"))
+			var pipeline = CreatePipeline();
+			return FindAllPowers().Cast<XPathNavigator>().Select(powerElement => ApplyTransformPipeline(powerElement, pipeline));
+		}
+
+		public static CardViewModel ApplyTransformPipeline(XPathNavigator powerElement,
+			IEnumerable<Func<PowerPipelineState, PowerPipelineState>> pipeline)
+		{
+			var state = new PowerPipelineState(powerElement);
+			state = pipeline.Aggregate(state, (current, op) => op(current));
+			return state.ViewModel;
+		}
+
+		public XPathNodeIterator FindAllPowers()
+		{
+			return _character.CreateNavigator().Select("details/detail[@type='power']");
+		}
+
+		public List<Func<PowerPipelineState, PowerPipelineState>> CreatePipeline()
+		{
+			return new List<Func<PowerPipelineState, PowerPipelineState>>
 			{
-				var state = new PowerPipelineState(powerElement);
-				state = ToPowerInfo(state);
-				state = GetOnlineInfoForPower(state);
-				state = CleanTheResponse(state);
-				state = CreateViewModel(state);
-				yield return state.ViewModel;
-			}
+				ToPowerInfo,
+				GetOnlineInfoForPower,
+				CleanTheResponse,
+				CreateViewModel
+			};
 		}
 
 		public PowerPipelineState CreateViewModel(PowerPipelineState state)
@@ -68,19 +87,5 @@ namespace CodeSequences
 			powerInfo.LoadXml(powerDetails);
 			return powerInfo;
 		}
-	}
-
-	public class PowerPipelineState
-	{
-		public PowerPipelineState(XPathNavigator powerElement)
-		{
-			PowerElement = powerElement;
-		}
-
-		public XPathNavigator PowerElement { get; set; }
-		public PowerLocalInfo LocalInfo { get; set; }
-		public string WotcResponse { get; set; }
-		public XmlDocument CleanResponse { get; set; }
-		public CardViewModel ViewModel { get; set; }
 	}
 }

@@ -11,7 +11,7 @@ namespace CodeSequences
 		private readonly PowerFormatter _formatter = new PowerFormatter();
 
 		// Would be correct client. Logging in is someone else's concern. Assume that is done before calling Parse.
-		private WotcClient _wotcService;
+		private readonly WotcClient _wotcService = new WotcClient();
 
 		public IEnumerable<CardViewModel> ParseCharacterIntoCards()
 		{

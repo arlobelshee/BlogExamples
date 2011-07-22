@@ -9,7 +9,7 @@ namespace CodeSequences
 		private readonly XmlDocument _character = new XmlDocument();
 
 		// Logging in is someone else's concern. Assume that is done before calling Parse.
-		private WotcClient _wotcService;
+		private readonly WotcClient _wotcService = new WotcClient();
 
 		public IEnumerable<CardViewModel> ParseCharacterIntoCards()
 		{
