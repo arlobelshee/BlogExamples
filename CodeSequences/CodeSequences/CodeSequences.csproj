@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="_5_code_becomes_data.cs" />
+    <Compile Include="_6_split_out_the_classes.cs" />
     <Compile Include="_4_to_uniform_function_signatures.cs" />
     <Compile Include="_2_fix_primitive_obsession.cs" />
     <Compile Include="_1_ugly_mess.cs" />

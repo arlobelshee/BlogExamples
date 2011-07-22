@@ -12,7 +12,7 @@ namespace CodeSequences
 		private readonly WotcResponseCleaner _cleaner = new WotcResponseCleaner();
 		private readonly PowerFormatter _formatter = new PowerFormatter();
 
-		// Would be correct client. Logging in is someone else's concern. Assume that is done before calling Parse.
+		// Logging in is someone else's concern. Assume that is done before calling Parse.
 		private readonly WotcClient _wotcService = new WotcClient();
 
 		public IEnumerable<CardViewModel> ParseCharacterIntoCards()
