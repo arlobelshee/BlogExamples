@@ -11,7 +11,7 @@ namespace CodeSequences
 		private readonly PowerFormatter _formatter = new PowerFormatter();
 
 		// Would be correct client. Logging in is someone else's concern. Assume that is done before calling Parse.
-		private object _wotcService;
+		private WotcClient _wotcService;
 
 		public IEnumerable<CardViewModel> ParseCharacterIntoCards()
 		{
@@ -19,7 +19,7 @@ namespace CodeSequences
 			{
 				var localInfo = _ToPowerInfo(powerElement);
 
-				string powerDetails = _wotcService.GetPowerDetails(localInfo.PowerId);
+				var powerDetails = _wotcService.GetPowerDetails(localInfo.PowerId);
 				powerDetails = _cleaner.CleanTheText(powerDetails);
 				var powerInfo = _cleaner.CleanTheXml(_ParseXml(powerDetails));
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -9,8 +8,8 @@ namespace CodeSequences
 	{
 		private readonly XmlDocument _character = new XmlDocument();
 
-		// Would be correct client. Logging in is someone else's concern. Assume that is done before calling Parse.
-		private object _wotcService;
+		// Logging in is someone else's concern. Assume that is done before calling Parse.
+		private WotcClient _wotcService;
 
 		public IEnumerable<CardViewModel> ParseCharacterIntoCards()
 		{
@@ -20,7 +19,7 @@ namespace CodeSequences
 				var powerId = powerElements.GetAttribute("Id", "");
 				var math = _character.SelectNodes(string.Format("calculations/power[@name='{0}']", name)).Item(0).Value;
 
-				string powerDetails = _wotcService.GetPowerDetails(powerId);
+				var powerDetails = _wotcService.GetPowerDetails(powerId);
 				powerDetails = _CleanTheText(powerDetails);
 				var powerInfo = new XmlDocument();
 				powerInfo.LoadXml(powerDetails);
@@ -56,14 +55,27 @@ namespace CodeSequences
 		private string _CleanTheText(string powerDetails) {}
 	}
 
-	public enum CardColor {}
+	public class WotcClient
+	{
+		public string GetPowerDetails(string powerId) {}
+	}
+
+	public enum CardColor
+	{
+		Red,
+		Green,
+		Black,
+		Blue,
+		Silver,
+		Gold
+	}
 
 	public class CardViewModel
 	{
+		public CardColor Color;
 		public IEnumerable<Block> Details;
 		public string Subtitle;
 		public string Title;
-		public CardColor Color;
 		public string UnderlyingCalculations;
 	}
 }
