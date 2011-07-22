@@ -43,6 +43,7 @@
     <Compile Include="_2_fix_primitive_obsession.cs" />
     <Compile Include="_1_ugly_mess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="_3_extract_methods_to_show_structure.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
