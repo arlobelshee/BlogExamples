@@ -78,4 +78,6 @@ namespace CodeSequences
 		public string Title;
 		public string UnderlyingCalculations;
 	}
+
+	public class Block {}
 }
