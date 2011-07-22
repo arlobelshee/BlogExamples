@@ -18,13 +18,13 @@ namespace CodeSequences
 		public IEnumerable<CardViewModel> ParseCharacterIntoCards()
 		{
 			var pipeline = CreatePipeline();
-			return FindAllPowers().Cast<XPathNavigator>().Select(powerElement => ApplyTransformPipeline(powerElement, pipeline));
+			return FindAllPowers().Cast<XPathNavigator>().Select(powerElement => ApplyTransformPipeline(powerElement, pipeline, _character));
 		}
 
 		public static CardViewModel ApplyTransformPipeline(XPathNavigator powerElement,
-			IEnumerable<Func<PowerPipelineState, PowerPipelineState>> pipeline)
+			IEnumerable<Func<PowerPipelineState, PowerPipelineState>> pipeline, XmlDocument character)
 		{
-			var state = new PowerPipelineState(powerElement);
+			var state = new PowerPipelineState(powerElement, character.CreateNavigator());
 			state = pipeline.Aggregate(state, (current, op) => op(current));
 			return state.ViewModel;
 		}
@@ -76,7 +76,7 @@ namespace CodeSequences
 		{
 			var name = state.PowerElement.GetAttribute("Name", "");
 			var powerId = state.PowerElement.GetAttribute("Id", "");
-			var math = _character.SelectNodes(string.Format("calculations/power[@name='{0}']", name)).Item(0).Value;
+			var math = state.Character.Select(string.Format("calculations/power[@name='{0}']", name)).Cast<XPathNavigator>().First().Value;
 			state.LocalInfo = new PowerLocalInfo(name, powerId, math);
 			return state;
 		}

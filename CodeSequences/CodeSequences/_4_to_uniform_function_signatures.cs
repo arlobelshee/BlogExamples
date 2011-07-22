@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
 using System.Xml.XPath;
+using System.Linq;
 
 namespace CodeSequences
 {
@@ -17,7 +18,7 @@ namespace CodeSequences
 		{
 			foreach (XPathNavigator powerElement in _character.CreateNavigator().Select("details/detail[@type='power']"))
 			{
-				var state = new PowerPipelineState(powerElement);
+				var state = new PowerPipelineState(powerElement, _character.CreateNavigator());
 				state = ToPowerInfo(state);
 				state = GetOnlineInfoForPower(state);
 				state = CleanTheResponse(state);
@@ -57,7 +58,7 @@ namespace CodeSequences
 		{
 			var name = state.PowerElement.GetAttribute("Name", "");
 			var powerId = state.PowerElement.GetAttribute("Id", "");
-			var math = _character.SelectNodes(string.Format("calculations/power[@name='{0}']", name)).Item(0).Value;
+			var math = state.Character.Select(string.Format("calculations/power[@name='{0}']", name)).Cast<XPathNavigator>().First().Value;
 			state.LocalInfo = new PowerLocalInfo(name, powerId, math);
 			return state;
 		}
@@ -72,12 +73,14 @@ namespace CodeSequences
 
 	public class PowerPipelineState
 	{
-		public PowerPipelineState(XPathNavigator powerElement)
+		public PowerPipelineState(XPathNavigator powerElement, XPathNavigator character)
 		{
 			PowerElement = powerElement;
+			Character = character;
 		}
 
 		public XPathNavigator PowerElement { get; set; }
+		public XPathNavigator Character { get; set; }
 		public PowerLocalInfo LocalInfo { get; set; }
 		public string WotcResponse { get; set; }
 		public XmlDocument CleanResponse { get; set; }
