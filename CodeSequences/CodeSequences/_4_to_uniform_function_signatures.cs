@@ -16,7 +16,7 @@ namespace CodeSequences
 
 		public IEnumerable<CardViewModel> ParseCharacterIntoCards()
 		{
-			foreach (XPathNavigator powerElement in _character.CreateNavigator().Select("details/detail[@type='power']"))
+			foreach (XPathNavigator powerElement in FindAllPowers())
 			{
 				var state = new PowerPipelineState(powerElement, _character.CreateNavigator());
 				state = ToPowerInfo(state);
@@ -25,6 +25,11 @@ namespace CodeSequences
 				state = CreateViewModel(state);
 				yield return state.ViewModel;
 			}
+		}
+
+		public XPathNodeIterator FindAllPowers()
+		{
+			return _character.CreateNavigator().Select("details/detail[@type='power']");
 		}
 
 		public PowerPipelineState CreateViewModel(PowerPipelineState state)

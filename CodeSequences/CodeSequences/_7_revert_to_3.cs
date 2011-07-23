@@ -15,13 +15,18 @@ namespace CodeSequences
 
 		public IEnumerable<CardViewModel> ParseCharacterIntoCards()
 		{
-			foreach (XPathNavigator powerElement in _character.CreateNavigator().Select("details/detail[@type='power']"))
+			foreach (XPathNavigator powerElement in FindAllPowers())
 			{
 				var localInfo = ToPowerInfo(powerElement);
 				var powerDetails = GetOnlineInfoForPower(localInfo);
 				var powerInfo = CleanTheResponse(powerDetails);
 				yield return CreateViewModel(localInfo, powerInfo);
 			}
+		}
+
+		public XPathNodeIterator FindAllPowers()
+		{
+			return _character.CreateNavigator().Select("details/detail[@type='power']");
 		}
 
 		public CardViewModel CreateViewModel(PowerLocalInfo localInfo, XmlDocument powerInfo)
