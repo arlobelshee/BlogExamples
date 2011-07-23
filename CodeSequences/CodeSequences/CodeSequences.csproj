@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="_9_reify_the_continuations.cs" />
     <Compile Include="_8_go_parallel_and_lazy.cs" />
     <Compile Include="_7_revert_to_3.cs" />
     <Compile Include="_5_code_becomes_data.cs" />

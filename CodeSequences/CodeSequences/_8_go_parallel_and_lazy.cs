@@ -22,9 +22,9 @@ namespace CodeSequences
 
 		private CardViewModel ParseOneCard(PowerLocalInfo localInfo)
 		{
+			var card = new CardViewModel();
 			var powerDetails = GetOnlineInfoForPower(localInfo);
 			var powerInfo = powerDetails.ContinueWith(t => CleanTheResponse(t.Result));
-			var card = new CardViewModel();
 			powerInfo.ContinueWith(t => UpdateViewModel(localInfo, t.Result, card));
 			return card;
 		}
